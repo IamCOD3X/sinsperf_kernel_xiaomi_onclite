@@ -871,7 +871,6 @@ static int lan78xx_read_otp(struct lan78xx_net *dev, u32 offset,
 			else
 				ret = -EINVAL;
 		}
-
 		if (!ret)
 			ret = lan78xx_read_raw_otp(dev, offset, length, data);
 	}
