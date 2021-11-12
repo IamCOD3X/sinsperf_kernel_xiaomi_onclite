@@ -766,9 +766,7 @@ resizefs_out:
 		if (copy_from_user(&range, (struct fstrim_range __user *)arg,
 		    sizeof(range)))
 			return -EFAULT;
-
-		range.minlen = max((unsigned int)range.minlen,
-				   q->limits.discard_granularity);
+				   
 		ret = ext4_trim_fs(sb, &range, flags);
 		if (ret < 0)
 			return ret;
