@@ -621,8 +621,11 @@ static ssize_t get_random_bytes_user(void __user *buf, size_t nbytes)
 
 	while (nbytes) {
 		if (large_request && need_resched()) {
-			if (signal_pending(current))
+			if (signal_pending(current)) {
+				if (!ret)
+					ret = -ERESTARTSYS;
 				break;
+			}
 			schedule();
 		}
 		extract_crng(tmp);
@@ -635,10 +638,11 @@ static ssize_t get_random_bytes_user(void __user *buf, size_t nbytes)
 		nbytes -= len;
 		buf += len;
 		ret += len;
-	}
+	} while (nbytes);
 
-	memzero_explicit(chacha_state, sizeof(chacha_state));
 	memzero_explicit(output, sizeof(output));
+out_zero_chacha:
+	memzero_explicit(chacha_state, sizeof(chacha_state));
 	return ret;
 }
 
