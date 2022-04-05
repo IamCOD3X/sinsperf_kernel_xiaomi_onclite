@@ -619,14 +619,38 @@ static ssize_t get_random_bytes_user(void __user *buf, size_t nbytes)
 	__u8 tmp[CHACHA_BLOCK_SIZE] __aligned(4);
 	int large_request = (nbytes > 256);
 
+<<<<<<< HEAD
 	while (nbytes) {
 		if (large_request && need_resched()) {
+=======
+	if (!nbytes)
+		return 0;
+
+	/*
+	 * Immediately overwrite the ChaCha key at index 4 with random
+	 * bytes, in case userspace causes copy_to_user() below to sleep
+	 * forever, so that we still retain forward secrecy in that case.
+	 */
+	crng_make_state(chacha_state, (u8 *)&chacha_state[4], CHACHA_KEY_SIZE);
+	/*
+	 * However, if we're doing a read of len <= 32, we don't need to
+	 * use chacha_state after, so we can simply return those bytes to
+	 * the user directly.
+	 */
+	if (nbytes <= CHACHA_KEY_SIZE) {
+		ret = copy_to_user(buf, &chacha_state[4], nbytes) ? -EFAULT : nbytes;
+		goto out_zero_chacha;
+	}
+
+	do {
+		if (large_request) {
+>>>>>>> f68316bb5cb7 (random: check for signal_pending() outside of need_resched() check)
 			if (signal_pending(current)) {
 				if (!ret)
 					ret = -ERESTARTSYS;
 				break;
 			}
-			schedule();
+			cond_resched();
 		}
 		extract_crng(tmp);
 		i = min_t(int, nbytes, CHACHA_BLOCK_SIZE);
