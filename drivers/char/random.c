@@ -1154,6 +1154,7 @@ static void mix_interrupt_randomness(struct work_struct *work)
 	 * we don't wind up "losing" some.
 	 */
 	unsigned long pool[2];
+	unsigned int count;
 
 	/* Check to see if we're running on the wrong CPU due to hotplug. */
 	local_irq_disable();
@@ -1167,12 +1168,13 @@ static void mix_interrupt_randomness(struct work_struct *work)
 	 * consistent view, before we reenable irqs again.
 	 */
 	memcpy(pool, fast_pool->pool, sizeof(pool));
+	count = fast_pool->count;
 	fast_pool->count = 0;
 	fast_pool->last = jiffies;
 	local_irq_enable();
 
 	mix_pool_bytes(pool, sizeof(pool));
-	credit_init_bits(1);
+	credit_init_bits(max(1u, (count & U16_MAX) / 64));
 
 	memzero_explicit(pool, sizeof(pool));
 }
