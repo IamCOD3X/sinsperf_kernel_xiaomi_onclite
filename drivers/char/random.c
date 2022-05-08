@@ -261,8 +261,15 @@ static void crng_reseed(void)
 		++next_gen;
 	WRITE_ONCE(base_crng.generation, next_gen);
 	WRITE_ONCE(base_crng.birth, jiffies);
+<<<<<<< HEAD
 	if (!crng_ready())
 		crng_init = CRNG_READY;
+=======
+	if (!crng_ready()) {
+		crng_init = CRNG_READY;
+		finalize_init = true;
+	}
+>>>>>>> 87fccf8de1ae (random: use symbolic constants for crng_init states)
 	spin_unlock_irqrestore(&base_crng.lock, flags);
 	memzero_explicit(key, sizeof(key));
 }
