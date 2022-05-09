@@ -261,15 +261,8 @@ static void crng_reseed(void)
 		++next_gen;
 	WRITE_ONCE(base_crng.generation, next_gen);
 	WRITE_ONCE(base_crng.birth, jiffies);
-<<<<<<< HEAD
 	if (!crng_ready())
 		crng_init = CRNG_READY;
-=======
-	if (!crng_ready()) {
-		crng_init = CRNG_READY;
-		finalize_init = true;
-	}
->>>>>>> 87fccf8de1ae (random: use symbolic constants for crng_init states)
 	spin_unlock_irqrestore(&base_crng.lock, flags);
 	memzero_explicit(key, sizeof(key));
 }
@@ -728,9 +721,22 @@ static void __cold _credit_init_bits(size_t bits)
 		wake_up_interruptible(&crng_init_wait);
 		kill_fasync(&fasync, SIGIO, POLL_IN);
 		pr_notice("crng init done\n");
+<<<<<<< HEAD
 		if (urandom_warning.missed)
 			pr_notice("%d urandom warning(s) missed due to ratelimiting\n",
 				  urandom_warning.missed);
+=======
+		if (unseeded_warning.missed) {
+			pr_notice("%d get_random_xx warning(s) missed due to ratelimiting\n",
+				  unseeded_warning.missed);
+			unseeded_warning.missed = 0;
+		}
+		if (urandom_warning.missed) {
+			pr_notice("%d urandom warning(s) missed due to ratelimiting\n",
+				  urandom_warning.missed);
+			urandom_warning.missed = 0;
+		}
+>>>>>>> 39cd44bdb504 (random: avoid initializing twice in credit race)
 	} else if (orig < POOL_EARLY_BITS && new >= POOL_EARLY_BITS) {
 		spin_lock_irqsave(&base_crng.lock, flags);
 		/* Check if crng_init is CRNG_EMPTY, to avoid race with crng_reseed(). */
