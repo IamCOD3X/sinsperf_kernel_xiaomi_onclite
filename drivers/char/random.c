@@ -187,7 +187,6 @@ static void __cold process_random_ready_list(void)
 		printk_deferred(KERN_NOTICE "random: %s called from %pS with crng_init=%d\n", \
 				__func__, (void *)_RET_IP_, crng_init)
 
-
 /*********************************************************************
  *
  * Fast key erasure RNG, the "crng".
@@ -721,22 +720,9 @@ static void __cold _credit_init_bits(size_t bits)
 		wake_up_interruptible(&crng_init_wait);
 		kill_fasync(&fasync, SIGIO, POLL_IN);
 		pr_notice("crng init done\n");
-<<<<<<< HEAD
 		if (urandom_warning.missed)
 			pr_notice("%d urandom warning(s) missed due to ratelimiting\n",
 				  urandom_warning.missed);
-=======
-		if (unseeded_warning.missed) {
-			pr_notice("%d get_random_xx warning(s) missed due to ratelimiting\n",
-				  unseeded_warning.missed);
-			unseeded_warning.missed = 0;
-		}
-		if (urandom_warning.missed) {
-			pr_notice("%d urandom warning(s) missed due to ratelimiting\n",
-				  urandom_warning.missed);
-			urandom_warning.missed = 0;
-		}
->>>>>>> 39cd44bdb504 (random: avoid initializing twice in credit race)
 	} else if (orig < POOL_EARLY_BITS && new >= POOL_EARLY_BITS) {
 		spin_lock_irqsave(&base_crng.lock, flags);
 		/* Check if crng_init is CRNG_EMPTY, to avoid race with crng_reseed(). */
