@@ -835,7 +835,7 @@ int __init random_init(const char *command_line)
 		crng_reseed();
 	else if (trust_cpu)
 		_credit_init_bits(arch_bits);
-
+		
 	return 0;
 }
 
