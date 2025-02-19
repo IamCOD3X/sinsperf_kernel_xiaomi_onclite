@@ -3,16 +3,16 @@
 kernel_dir="${PWD}"
 CCACHE=$(command -v ccache)
 objdir="${kernel_dir}/out"
-anykernel=$HOME/anykernel
+anykernel=$PWD/anykernel
 builddir="${kernel_dir}/build"
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
-kernel_name="SinsPerf-1.2-onc"
+kernel_name="ViP3R-v1.x-onc"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
-TC_DIR=$HOME/tc/proton-clang
+TC_DIR=/home/ripper/Desktop/OS/KERNEL_STUFF/ToolChains/proton-clang
 export CONFIG_FILE="onclite-perf_defconfig"
 export ARCH="arm64"
-export KBUILD_BUILD_HOST=ProjectBlaze
-export KBUILD_BUILD_USER=Aditya
+export KBUILD_BUILD_HOST=RYZEN
+export KBUILD_BUILD_USER=IamCOD3X
 
 export PATH="$TC_DIR/bin:$PATH"
 
@@ -54,37 +54,7 @@ compile()
                         -j$(nproc --all)
 }
 
-completion() 
-{
-	cd ${objdir}
-	COMPILED_IMAGE=arch/arm64/boot/Image.gz-dtb
-	COMPILED_DTBO=arch/arm64/boot/dtbo.img
-	if [[ -f ${COMPILED_IMAGE} && ${COMPILED_DTBO} ]]; then
-
-	git clone -q https://github.com/afterallafk/AnyKernel3 $anykernel
-
-		mv -f $ZIMAGE ${COMPILED_DTBO} $anykernel
-
-        cd $anykernel
-        find . -name "*.zip" -type f
-        find . -name "*.zip" -type f -delete
-        zip -r AnyKernel.zip *
-        mv AnyKernel.zip $zip_name
-        mv $anykernel/$zip_name $HOME/$zip_name
-	rm -rf $anykernel
-        END=$(date +"%s")
-        DIFF=$(($END - $START))
-        curl --upload-file $HOME/$zip_name https://free.keep.sh; echo
-		echo -e ${LGR} "############################################"
-		echo -e ${LGR} "############# OkThisIsEpic!  ##############"
-		echo -e ${LGR} "############################################${NC}"
-	else
-		echo -e ${RED} "############################################"
-		echo -e ${RED} "##         This Is Not Epic :'(           ##"
-		echo -e ${RED} "############################################${NC}"
-	fi
-}
 make_defconfig
 compile
-completion
+
 cd ${kernel_dir}
