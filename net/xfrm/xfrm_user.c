@@ -1920,11 +1920,7 @@ static int xfrm_get_policy(struct sk_buff *skb, struct nlmsghdr *nlh,
 			if (err)
 				return err;
 		}
-<<<<<<< HEAD
-		xp = xfrm_policy_bysel_ctx(net, mark, if_id, type, p->dir, &p->sel,
-=======
-		xp = xfrm_policy_bysel_ctx(net, &m, type, p->dir, &p->sel,
->>>>>>> 2be597a371f8 (xfrm: policy: match with both mark and mask on user interfaces)
+		xp = xfrm_policy_bysel_ctx(net, &m, if_id, type, p->dir, &p->sel,
 					   ctx, delete, &err);
 		security_xfrm_policy_free(ctx);
 	}
@@ -2192,11 +2188,8 @@ static int xfrm_add_pol_expire(struct sk_buff *skb, struct nlmsghdr *nlh,
 	u8 type = XFRM_POLICY_TYPE_MAIN;
 	int err = -ENOENT;
 	struct xfrm_mark m;
-<<<<<<< HEAD
 	u32 mark = xfrm_mark_get(attrs, &m);
 	u32 if_id = 0;
-=======
->>>>>>> 2be597a371f8 (xfrm: policy: match with both mark and mask on user interfaces)
 
 	err = copy_from_user_policy_type(&type, attrs);
 	if (err)
@@ -2206,18 +2199,13 @@ static int xfrm_add_pol_expire(struct sk_buff *skb, struct nlmsghdr *nlh,
 	if (err)
 		return err;
 
-<<<<<<< HEAD
 	if (attrs[XFRMA_IF_ID])
 		if_id = nla_get_u32(attrs[XFRMA_IF_ID]);
 
-	if (p->index)
-		xp = xfrm_policy_byid(net, mark, if_id, type, p->dir, p->index, 0, &err);
-=======
 	xfrm_mark_get(attrs, &m);
 
 	if (p->index)
-		xp = xfrm_policy_byid(net, &m, type, p->dir, p->index, 0, &err);
->>>>>>> 2be597a371f8 (xfrm: policy: match with both mark and mask on user interfaces)
+		xp = xfrm_policy_byid(net, &m, if_id, type, p->dir, p->index, 0, &err);
 	else {
 		struct nlattr *rt = attrs[XFRMA_SEC_CTX];
 		struct xfrm_sec_ctx *ctx;
@@ -2234,11 +2222,7 @@ static int xfrm_add_pol_expire(struct sk_buff *skb, struct nlmsghdr *nlh,
 			if (err)
 				return err;
 		}
-<<<<<<< HEAD
-		xp = xfrm_policy_bysel_ctx(net, mark, if_id, type, p->dir,
-=======
-		xp = xfrm_policy_bysel_ctx(net, &m, type, p->dir,
->>>>>>> 2be597a371f8 (xfrm: policy: match with both mark and mask on user interfaces)
+		xp = xfrm_policy_bysel_ctx(net, &m, if_id, type, p->dir,
 					   &p->sel, ctx, 0, &err);
 		security_xfrm_policy_free(ctx);
 	}

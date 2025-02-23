@@ -1150,11 +1150,9 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 
 	pr_debug("Command line is: %s\n", (char*)data);
 
-<<<<<<< HEAD
 #ifdef CONFIG_BOOT_INFO
 	early_init_dt_check_for_powerup_reason(node);
 #endif
-=======
 	rng_seed = of_get_flat_dt_prop(node, "rng-seed", &l);
 	if (rng_seed && l > 0) {
 		add_bootloader_randomness(rng_seed, l);
@@ -1162,7 +1160,6 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 		/* try to clear seed so it won't be found. */
 		fdt_nop_property(initial_boot_params, node, "rng-seed");
 	}
->>>>>>> c288318b4c04 (fdt: add support for rng-seed)
 
 	/* break now */
 	return 1;
